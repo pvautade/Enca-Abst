@@ -1,0 +1,118 @@
+package ops;
+
+import java.util.ArrayList;
+import java.util.List;
+
+abstract class Account {
+	  public int accountNumber;
+		 public String accountHolderName;
+		 public double balance;
+		 public String accountType;
+		 
+	 public Account (int accountNumber,String accountHolderName,double balance,String accountType ) {
+		 this.accountNumber=accountNumber;
+		 this.accountHolderName=accountHolderName;
+		 this.balance=balance;
+		 this.accountType=accountType;
+	 } 
+		 public abstract void deposit(double amount);
+		 
+		 public abstract void withdraw(double amount);
+		 
+		public abstract String getAccountInfo();
+}
+  
+	class SavingAccount extends Account{    
+		private double interestRate;
+		
+	public SavingAccount(int accountNumber, String accountHolderName, double balance, double interstRate) {
+			super(accountNumber, accountHolderName, balance, "Savings");
+			this.interestRate=interestRate;
+			
+		}
+	
+
+	@Override
+	public void deposit(double amount) {
+		balance +=amount;
+		
+	}
+
+	@Override
+	public void withdraw(double amount) {
+		balance -= amount;
+		
+	}
+		
+  
+    public double calculateInterest() {
+    	return balance *interestRate;
+    }
+    public String getAccountInfo() {
+		  return "Account Number:" + accountNumber +",Account Holder:" +accountHolderName+",Balance: " + balance;
+		  	
+		 }
+	}
+	class CheckingAccount extends Account{
+		private double overdraftLimit;
+	public CheckingAccount(int accountNumber, String accountHolderName, double balance, double overdraftLimit) {
+			super(accountNumber, accountHolderName, balance, "Checking");
+			this.overdraftLimit= overdraftLimit;
+		}
+
+		@Override
+		public void deposit(double amount) {
+			balance +=amount;
+		}
+
+		@Override
+		public void withdraw(double amount) {
+			if(balance - amount >= -overdraftLimit) {
+				balance -=amount;
+			}
+			else {
+	System.out.println("withdrawal cannot be processed due to insufficient funds");
+			}
+		}	
+		 public String getAccountInfo() {
+			  return "Account Number:" + accountNumber +",Account Holder:" +accountHolderName+",Balance: " + balance;
+			  	
+			 }
+	}
+	
+	class Bank{
+		private List<Account>accounts;
+		
+		public Bank() {
+			accounts=new ArrayList<>();
+		}
+		public void addaccount(Account account) {
+			accounts.add(account);
+		}
+		public void removeAccount(Account account) {
+			accounts.remove(account);
+		}
+		public void displayAccounts() {
+			for(Account account: accounts) {
+			System.out.println(account.getAccountInfo());
+			}
+		}
+	
+	
+	public class main{
+	public static void main(String[]args) {
+		Bank bank=new Bank();
+		SavingAccount savingAccount=new SavingAccount(4,"suraj",800,0.06);
+		CheckingAccount checkingAccount=new CheckingAccount(5,"manoj",600,100);
+		bank.addaccount(savingAccount);
+		bank.addaccount(checkingAccount);
+		System.out.println("initial account information");
+		bank.displayAccounts();
+		savingAccount.deposit(300);
+		checkingAccount.withdraw (400);
+		System.out.println("updated account inforamtion");
+		bank.displayAccounts();
+	}
+	}
+
+	}
